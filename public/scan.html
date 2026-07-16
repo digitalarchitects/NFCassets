@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Scan - Asset Tracker</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0d6efd" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <div class="container">
+        <div class="card asset-card mx-auto">
+            <div class="card-body text-center">
+                <h4 class="card-title mb-3">Scan Asset</h4>
+
+                <div id="nfc-section" class="d-none mb-3">
+                    <button id="nfc-scan-btn" class="btn btn-primary btn-lg w-100">Tap to Scan NFC Tag</button>
+                    <p class="text-muted mt-2 mb-0" id="nfc-status">Waiting for NFC...</p>
+                </div>
+
+                <div id="qr-section" class="mb-3">
+                    <button id="qr-scan-btn" class="btn btn-outline-primary w-100 mb-2">Scan QR Code Instead</button>
+                    <div id="reader" class="d-none"></div>
+                </div>
+
+                <form id="manual-form" class="mt-3">
+                    <label class="form-label" for="manual-code">Or enter asset number manually</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="manual-code" placeholder="e.g. AST-00451" />
+                        <button class="btn btn-secondary" type="submit">Go</button>
+                    </div>
+                </form>
+
+                <div id="scan-error" class="alert alert-danger mt-3 d-none"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/scan.js"></script>
+</body>
+</html>
