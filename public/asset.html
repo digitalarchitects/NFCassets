@@ -22,6 +22,8 @@
                     <h4 class="card-title" id="asset-title">-</h4>
                     <p class="mb-1"><strong>Asset No:</strong> <span id="asset-no"></span></p>
                     <p class="mb-1"><strong>Serial:</strong> <span id="asset-serial"></span></p>
+                    <p class="mb-1"><strong>Make / Model:</strong> <span id="asset-make-model">-</span></p>
+                    <p class="mb-1"><strong>Category:</strong> <span id="asset-category">-</span></p>
                     <p class="mb-1"><strong>Assigned To:</strong> <span id="asset-owner"></span></p>
                     <p class="mb-1"><strong>Location:</strong> <span id="asset-location"></span></p>
                     <p class="mb-3"><strong>Status:</strong> <span id="asset-status" class="badge bg-secondary"></span></p>
@@ -53,7 +55,7 @@
                         </div>
                         <div class="mb-2">
                             <label class="form-label">New Location</label>
-                            <input type="text" class="form-control" id="new-location" />
+                            <select class="form-select" id="new-location-id"><option value="">(no change)</option></select>
                         </div>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>

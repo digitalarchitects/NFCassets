@@ -13,34 +13,42 @@
     <div id="nav-placeholder"></div>
 
     <div class="container">
+        <!-- Search & Filters -->
         <div class="row mb-3">
-            <div class="col-md-8">
-                <div class="input-group">
+            <div class="col-md-12">
+                <div class="input-group mb-2">
                     <input type="text" class="form-control" id="search-input" placeholder="Search by asset no, serial, owner, location..." />
-                    <select class="form-select" id="status-filter" style="max-width: 160px;">
+                    <select class="form-select" id="status-filter" style="max-width: 140px;">
                         <option value="">All statuses</option>
                         <option value="active">Active</option>
                         <option value="missing">Missing</option>
                         <option value="retired">Retired</option>
                     </select>
                     <button class="btn btn-primary" id="search-btn">Search</button>
+                    <button class="btn btn-outline-primary d-none" id="add-toggle-btn">Add Asset</button>
                 </div>
-            </div>
-            <div class="col-md-4 text-end">
-                <button class="btn btn-outline-primary d-none" id="add-toggle-btn">Add Asset</button>
+                <div class="row g-2" id="filter-row">
+                    <div class="col-md-3"><select class="form-select form-select-sm filter-dropdown" id="filter-location"><option value="">All locations</option></select></div>
+                    <div class="col-md-3"><select class="form-select form-select-sm filter-dropdown" id="filter-make"><option value="">All makes</option></select></div>
+                    <div class="col-md-3"><select class="form-select form-select-sm filter-dropdown" id="filter-category"><option value="">All categories</option></select></div>
+                </div>
             </div>
         </div>
 
+        <!-- Add Asset Panel -->
         <div id="add-panel" class="card mb-3 d-none">
             <div class="card-body">
                 <h5>New Asset</h5>
                 <form id="add-form" class="row g-2">
                     <div class="col-md-3"><input class="form-control" id="new-asset-no" placeholder="Asset No" required /></div>
                     <div class="col-md-3"><input class="form-control" id="new-serial-no" placeholder="Serial No" /></div>
-                    <div class="col-md-3"><input class="form-control" id="new-description" placeholder="Description" /></div>
-                    <div class="col-md-3"><input class="form-control" id="new-owner" placeholder="Owner" /></div>
-                    <div class="col-md-3"><input class="form-control" id="new-location" placeholder="Location" /></div>
-                    <div class="col-md-3 d-grid"><button class="btn btn-success" type="submit">Create</button></div>
+                    <div class="col-md-4"><input class="form-control" id="new-description" placeholder="Description" /></div>
+                    <div class="col-md-2"><input class="form-control" id="new-owner" placeholder="Owner" /></div>
+                    <div class="col-md-3"><select class="form-select" id="new-location"><option value="">Location</option></select></div>
+                    <div class="col-md-3"><select class="form-select" id="new-category"><option value="">Category</option></select></div>
+                    <div class="col-md-3"><select class="form-select" id="new-make"><option value="">Make</option></select></div>
+                    <div class="col-md-3"><select class="form-select" id="new-model"><option value="">Model</option></select></div>
+                    <div class="col-md-12 d-grid"><button class="btn btn-success" type="submit">Create</button></div>
                 </form>
 
                 <hr />
@@ -57,8 +65,10 @@
                 <tr>
                     <th>Asset No</th>
                     <th>Description</th>
+                    <th>Make / Model</th>
                     <th>Owner</th>
                     <th>Location</th>
+                    <th>Category</th>
                     <th>Status</th>
                 </tr>
             </thead>

@@ -40,14 +40,23 @@
         document.getElementById('asset-no').textContent = asset.asset_no;
         document.getElementById('asset-serial').textContent = asset.serial_no || '-';
         document.getElementById('asset-owner').textContent = asset.owner || '-';
-        document.getElementById('asset-location').textContent = asset.location || '-';
+        document.getElementById('asset-location').textContent = asset.locationName || asset.location || '-';
+
+        // Resolved names from JOINs
+        const makeModel = [asset.makeName, asset.modelName].filter(Boolean).join(' ');
+        document.getElementById('asset-make-model').textContent = makeModel || '-';
+        document.getElementById('asset-category').textContent = asset.categoryName || '-';
 
         const statusBadge = document.getElementById('asset-status');
         statusBadge.textContent = asset.status;
         statusBadge.className = `badge ${statusColors[asset.status] || 'bg-secondary'}`;
 
         document.getElementById('new-owner').value = asset.owner || '';
-        document.getElementById('new-location').value = asset.location || '';
+        // Location dropdown pre-selected
+        const locSel = document.getElementById('new-location-id');
+        if (asset.location_id && locSel.options.length > 0) {
+            locSel.value = asset.location_id;
+        }
 
         const photoEl = document.getElementById('asset-photo');
         if (asset.photo_path) {
@@ -113,12 +122,12 @@
         e.preventDefault();
         const gps = await getGps();
         const newOwner = document.getElementById('new-owner').value.trim();
-        const newLocation = document.getElementById('new-location').value.trim();
+        const locationId = document.getElementById('new-location-id').value || null;
         const gpsStr = gps ? `${gps.latitude},${gps.longitude}` : null;
 
         const res = await AT.apiFetch(`/api/assets/${asset.id}/transfer`, {
             method: 'POST',
-            body: { newOwner, newLocation, gps: gpsStr },
+            body: { newOwner, locationId, gps: gpsStr },
         });
 
         if (res && res.ok) {
@@ -188,6 +197,16 @@
             )
             .join('') || '<p class="text-muted">No history yet.</p>';
     }
+
+    // Load locations for transfer dropdown
+    try {
+        const res = await AT.apiFetch('/api/lists/all');
+        if (res && res.ok) {
+            const data = await res.json();
+            const sel = document.getElementById('new-location-id');
+            sel.innerHTML = '<option value="">(no change)</option>' + data.locations.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+        }
+    } catch (e) { /* dropdown will be empty — still works */ }
 
     loadAsset();
 })();

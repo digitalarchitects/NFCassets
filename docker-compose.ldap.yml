@@ -1,0 +1,11 @@
+services:
+  ldap:
+    image: osixia/openldap:latest
+    container_name: nfcassets-ldap
+    ports:
+      - "127.0.0.1:3890:389"
+    environment:
+      LDAP_ORGANISATION: Example Corp
+      LDAP_DOMAIN: example.com
+      LDAP_ADMIN_PASSWORD: admin123
+    restart: unless-stopped

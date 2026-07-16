@@ -1,0 +1,23 @@
+services:
+  app:
+    build: .
+    container_name: nfcassets
+    ports:
+      - "127.0.0.1:3004:3000"
+    volumes:
+      - ./assets.db:/app/assets.db
+      - ./uploads:/app/uploads
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  ldap:
+    image: osixia/openldap:latest
+    container_name: nfcassets-ldap
+    ports:
+      - "127.0.0.1:3890:389"
+    environment:
+      LDAP_ORGANISATION: Example Corp
+      LDAP_DOMAIN: example.com
+      LDAP_ADMIN_PASSWORD: admin123
+    restart: unless-stopped

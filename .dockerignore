@@ -1,0 +1,12 @@
+node_modules
+assets.db
+uploads/*
+!uploads/.gitkeep
+.env
+.git
+.gitignore
+specs
+thoughts.md
+.vscode
+*.md
+!README.md

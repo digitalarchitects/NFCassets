@@ -53,6 +53,12 @@
         const el = document.getElementById('nav-placeholder');
         if (!el) return;
         const isAdmin = user && user.role === 'admin';
+        const adminLinks = isAdmin
+            ? '<a class="nav-link ${activePage === \'users\' ? \'active\' : \'\'}" href="/users.html">Users</a>' +
+              '<a class="nav-link ${activePage === \'lists\' ? \'active\' : \'\'}" href="/admin/lists.html">Lists</a>' +
+              '<a class="nav-link ${activePage === \'ldap\' ? \'active\' : \'\'}" href="/admin/ldap.html">LDAP</a>' +
+              '<a class="nav-link ${activePage === \'sync-review\' ? \'active\' : \'\'}" href="/admin/sync-review.html">Sync</a>'
+            : '';
         el.innerHTML = `
         <nav class="navbar navbar-expand navbar-dark bg-dark mb-3">
           <div class="container-fluid">
@@ -61,9 +67,10 @@
               <a class="nav-link ${activePage === 'dashboard' ? 'active' : ''}" href="/index.html">Dashboard</a>
               <a class="nav-link ${activePage === 'scan' ? 'active' : ''}" href="/scan.html">Scan</a>
               <a class="nav-link ${activePage === 'assets' ? 'active' : ''}" href="/assets.html">Assets</a>
+              ${adminLinks}
             </div>
             <div class="d-flex align-items-center">
-              <span class="text-light me-3">${user ? user.username : ''}${isAdmin ? ' (admin)' : ''}</span>
+              <a class="text-light me-3 text-decoration-none" href="/profile.html">${user ? user.username : ''}${isAdmin ? ' (admin)' : ''}</a>
               <button class="btn btn-outline-light btn-sm" id="logout-btn">Logout</button>
             </div>
           </div>

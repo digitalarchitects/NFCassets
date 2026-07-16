@@ -1,26 +1,20 @@
 <!--
 Sync Impact Report
-Version change: template -> 1.0.0
+Version change: 1.0.0 → 1.1.0
 Modified principles:
-- Template Principle 1 -> I. Lightweight, Zero-Licensing Stack
-- Template Principle 2 -> II. Offline-First Scanning
-- Template Principle 3 -> III. GUID Identity, Cheap Replaceable Tags
-- Template Principle 4 -> IV. Audit Trail on Every Action
-- Template Principle 5 -> V. Security Before Convenience
+- None
 Added principles:
-- VI. Simplicity Until Proven Otherwise
-Added sections:
-- Delivery Standards
-- Change Review Workflow
+- VII. Container-First, Cloudflare-Published
 Removed sections:
 - None
 Templates requiring updates:
-- ✅ .specify/templates/plan-template.md
-- ✅ .specify/templates/spec-template.md
-- ✅ .specify/templates/tasks-template.md
-- ✅ .specify/templates/checklist-template.md
+- ✅ .specify/templates/plan-template.md (Constitution Check needs VII added)
+- ✅ .specify/templates/spec-template.md (no change needed)
+- ✅ .specify/templates/tasks-template.md (no change needed)
+- ✅ .specify/templates/checklist-template.md (no change needed)
 Follow-up TODOs:
-- None
+- Add port allocation check to speckit-implement skill
+- Save global port_allocation memory entry for cross-project reference
 -->
 # NFC Asset Tracker Constitution
 
@@ -75,6 +69,29 @@ for example, migrate from SQLite to PostgreSQL only once the asset register appr
 ahead of an actual, stated need. Rationale: this project is explicitly scoped as a proof of
 concept that must stay easy to run, read, and modify.
 
+### VII. Container-First, Cloudflare-Published
+Every project MUST ship as a Docker container behind an nginx reverse proxy, exposed to the
+internet exclusively through Cloudflare Tunnel (`cloudflared`). The deployment pattern is:
+Docker Compose with three services — the application container, an nginx sidecar serving on
+a single host port mapped to container port 80, and the Cloudflare tunnel pointing to
+`127.0.0.1:<host-port>`. The nginx reverse proxy serves both the frontend static files and
+proxies `/api/` requests to the application backend, ensuring same-origin (no CORS
+complications). TLS termination is handled by Cloudflare — the internal traffic between
+nginx and the app container is plain HTTP.
+
+**Port discipline**: Before assigning a host port, the agent MUST cross-reference the running
+port allocation documented in the global Hermes memory (`port_allocation` entry). No port
+MAY be reused without explicit confirmation. The deployment plan MUST select a port that
+does not conflict with: the Hermes proxy (8645), OpenViking (1933), LiteLLM (4000),
+LibreChat (3080), vm-nginx (8080), golem-nginx (8443), golem-mobile (8765-8766),
+PostgreSQL instances (5432, 5433), or Portainer (9001). After assignment, the agent MUST
+update the global port allocation memory.
+
+Rationale: all production services are published through Cloudflare Tunnels for zero-trust
+access without opening firewall ports. Consistent nginx-sidecar pattern eliminates per-project
+CORS and TLS configuration. Port discipline prevents service outages from collisions
+(the WhatsApp bridge outage was caused by a port conflict).
+
 ## Delivery Standards
 
 Feature specifications MUST state which parts of the system are in scope (`public/` front end,
@@ -108,4 +125,4 @@ redefinitions of principles, MINOR for new principles or materially expanded req
 PATCH for clarifications or wording-only refinements. Compliance review is required during
 specification, planning, task generation, and pull request review.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16
+**Version**: 1.1.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16

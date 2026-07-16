@@ -1,0 +1,82 @@
+# Seed LDIF for osixia/openldap — domain structure auto-created by the image
+# Adds OUs and test users with AD-like attributes
+
+dn: ou=Users,dc=example,dc=com
+objectClass: organizationalUnit
+ou: Users
+
+dn: ou=Disabled,dc=example,dc=com
+objectClass: organizationalUnit
+ou: Disabled
+
+# Active users
+dn: cn=admin.user,ou=Users,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: admin.user
+sn: User
+givenName: Admin
+mail: admin@example.com
+roomNumber: Head Office
+userPassword: password123
+description: active
+
+dn: cn=kevin.wilson,ou=Users,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: kevin.wilson
+sn: Wilson
+givenName: Kevin
+mail: kevin@example.com
+roomNumber: Head Office
+userPassword: password123
+description: active
+
+dn: cn=jane.doe,ou=Users,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: jane.doe
+sn: Doe
+givenName: Jane
+mail: jane@example.com
+roomNumber: Satellite Depot
+userPassword: password123
+description: active
+
+dn: cn=bob.smith,ou=Users,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: bob.smith
+sn: Smith
+givenName: Bob
+mail: bob@example.com
+roomNumber: Warehouse B
+userPassword: password123
+description: active
+
+dn: cn=sarah.jones,ou=Users,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: sarah.jones
+sn: Jones
+givenName: Sarah
+mail: sarah@example.com
+roomNumber: Satellite Depot
+userPassword: password123
+description: active
+
+dn: cn=it.manager,ou=Users,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: it.manager
+sn: Manager
+givenName: IT
+mail: it@example.com
+roomNumber: Head Office
+userPassword: password123
+description: active
+
+# Disabled user in separate OU
+dn: cn=old.contractor,ou=Disabled,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: old.contractor
+sn: Contractor
+givenName: Old
+mail: contractor@example.com
+roomNumber: Head Office
+userPassword: password123
+description: disabled

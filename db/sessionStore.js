@@ -19,10 +19,10 @@ class SqliteSessionStore extends Store {
         try {
             this.clearExpiredStmt.run(Date.now());
             const row = this.getStmt.get(sid);
-            if (!row) return cb(null, null);
-            return cb(null, JSON.parse(row.sess));
+            if (!row) return setImmediate(() => cb(null, null));
+            return setImmediate(() => cb(null, JSON.parse(row.sess)));
         } catch (err) {
-            return cb(err);
+            return setImmediate(() => cb(err));
         }
     }
 
@@ -31,18 +31,18 @@ class SqliteSessionStore extends Store {
             const maxAge = session.cookie && session.cookie.maxAge ? session.cookie.maxAge : 86400000;
             const expires = Date.now() + maxAge;
             this.upsertStmt.run(sid, JSON.stringify(session), expires);
-            return cb(null);
+            setImmediate(() => cb(null));
         } catch (err) {
-            return cb(err);
+            setImmediate(() => cb(err));
         }
     }
 
     destroy(sid, cb) {
         try {
             this.destroyStmt.run(sid);
-            return cb(null);
+            setImmediate(() => cb(null));
         } catch (err) {
-            return cb(err);
+            setImmediate(() => cb(err));
         }
     }
 

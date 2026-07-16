@@ -6,12 +6,14 @@ const helmet = require('helmet');
 const csrfProtection = require('./middleware/csrf');
 
 require('./db/db'); // bootstraps schema on boot
-const SqliteSessionStore = require('./db/sessionStore');
 
 const authRoutes = require('./routes/auth');
 const assetRoutes = require('./routes/assets');
 const historyRoutes = require('./routes/history');
 const verificationRoutes = require('./routes/verification');
+const userRoutes = require('./routes/users');
+const listRoutes = require('./routes/lists');
+const adminRoutes = require('./routes/admin');
 const { requireAuth } = require('./middleware/auth');
 
 const app = express();
@@ -44,11 +46,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(
     session({
-        store: new SqliteSessionStore(),
-        name: 'nfc.sid',
         secret: process.env.SESSION_SECRET,
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: true,
         cookie: {
             httpOnly: true,
             sameSite: 'lax',
@@ -58,17 +58,22 @@ app.use(
     })
 );
 
-// CSRF protection for all state-changing requests (session-backed token, no extra deps).
+// Auth routes must mount BEFORE CSRF — login creates the session that CSRF depends on
+app.use('/api/auth', authRoutes);
+
+// CSRF protection for all other state-changing requests
 app.use('/api', csrfProtection);
 
 app.get('/api/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
 });
 
-app.use('/api/auth', authRoutes);
 app.use('/api/assets', requireAuth, assetRoutes);
 app.use('/api/history', requireAuth, historyRoutes);
 app.use('/api/verification', requireAuth, verificationRoutes);
+app.use('/api/users', requireAuth, userRoutes);
+app.use('/api/lists', requireAuth, listRoutes);
+app.use('/api/admin', requireAuth, adminRoutes);
 
 app.use('/uploads', requireAuth, express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -84,4 +89,26 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
     console.log(`NFC Asset Tracker listening on http://localhost:${PORT}`);
+
+    // Spec 004: Schedule daily LDAP sync if configured
+    if (process.env.LDAP_URL && process.env.LDAP_BIND_PASSWORD) {
+        const { importFromLDAP } = require('./lib/ldap');
+        const syncHour = parseInt(process.env.LDAP_SYNC_HOUR || '3', 10);
+        const msPerDay = 24 * 60 * 60 * 1000;
+
+        function scheduleNext() {
+            const now = new Date();
+            const next = new Date(now);
+            next.setHours(syncHour, 0, 0, 0);
+            if (next <= now) next.setDate(next.getDate() + 1);
+            const delay = next - now;
+            console.log(`LDAP sync scheduled for ${next.toISOString()} (in ${Math.round(delay / 60000)} min)`);
+            setTimeout(() => {
+                console.log('Running scheduled LDAP sync...');
+                importFromLDAP().then(r => console.log('LDAP sync done:', r)).catch(e => console.error('LDAP sync error:', e));
+                scheduleNext();
+            }, delay);
+        }
+        scheduleNext();
+    }
 });
