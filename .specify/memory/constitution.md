@@ -1,20 +1,18 @@
 <!--
 Sync Impact Report
-Version change: 1.0.0 → 1.1.0
+Version change: 1.1.0 → 1.2.0
 Modified principles:
 - None
 Added principles:
-- VII. Container-First, Cloudflare-Published
+- VIII. Local Assets, No CDN Dependency
 Removed sections:
 - None
 Templates requiring updates:
-- ✅ .specify/templates/plan-template.md (Constitution Check needs VII added)
+- ✅ .specify/templates/plan-template.md (Constitution Check needs VIII added)
 - ✅ .specify/templates/spec-template.md (no change needed)
 - ✅ .specify/templates/tasks-template.md (no change needed)
-- ✅ .specify/templates/checklist-template.md (no change needed)
 Follow-up TODOs:
-- Add port allocation check to speckit-implement skill
-- Save global port_allocation memory entry for cross-project reference
+- None (all CDN references already vendored locally)
 -->
 # NFC Asset Tracker Constitution
 
@@ -92,6 +90,17 @@ access without opening firewall ports. Consistent nginx-sidecar pattern eliminat
 CORS and TLS configuration. Port discipline prevents service outages from collisions
 (the WhatsApp bridge outage was caused by a port conflict).
 
+### VIII. Local Assets, No CDN Dependency
+All CSS, JavaScript, and font assets MUST be bundled locally within the project — never
+loaded from external CDNs at runtime. The `public/` directory MUST contain every stylesheet,
+script, and library the frontend needs. Rationale: CDNs introduce a runtime dependency on
+external infrastructure that can fail due to network restrictions (corporate firewalls,
+air-gapped sites), DNS issues, or CDN outages. The PWA offline-first design (Principle II)
+is undermined if the app shell references external resources — a service worker cannot cache
+cross-origin CDN assets without CORS headers. Bootstrap CSS, html5-qrcode, and any future
+frontend libraries MUST be vendored into `public/css/` and `public/js/` respectively. The
+service worker cache list in `sw.js` MUST include all local vendor assets.
+
 ## Delivery Standards
 
 Feature specifications MUST state which parts of the system are in scope (`public/` front end,
@@ -125,4 +134,4 @@ redefinitions of principles, MINOR for new principles or materially expanded req
 PATCH for clarifications or wording-only refinements. Compliance review is required during
 specification, planning, task generation, and pull request review.
 
-**Version**: 1.1.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16
+**Version**: 1.2.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16

@@ -8,6 +8,7 @@ const SHELL_ASSETS = [
     '/assets.html',
     '/manifest.json',
     '/css/style.css',
+    '/css/bootstrap.min.css',
     '/js/common.js',
     '/js/auth.js',
     '/js/dashboard.js',

@@ -26,18 +26,8 @@ const CDN = 'https://cdn.jsdelivr.net';
 
 app.use(
     helmet({
-        contentSecurityPolicy: {
-            directives: {
-                defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", CDN],
-                styleSrc: ["'self'", "'unsafe-inline'", CDN],
-                fontSrc: ["'self'", CDN],
-                imgSrc: ["'self'", 'data:', 'blob:'],
-                connectSrc: ["'self'"],
-                mediaSrc: ["'self'", 'blob:'],
-                workerSrc: ["'self'", 'blob:'],
-            },
-        },
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false,
     })
 );
 
