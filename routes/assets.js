@@ -204,12 +204,22 @@ router.put(
              WHERE id = ?`
         ).run(serialNo, description, status, locationId, makeId, modelId, categoryId, asset.id);
 
-        if (status !== asset.status) {
+        const changes = [
+            { field: 'serial_no', oldValue: asset.serial_no, newValue: serialNo },
+            { field: 'description', oldValue: asset.description, newValue: description },
+            { field: 'status', oldValue: asset.status, newValue: status },
+            { field: 'location_id', oldValue: asset.location_id, newValue: locationId },
+            { field: 'make_id', oldValue: asset.make_id, newValue: makeId },
+            { field: 'model_id', oldValue: asset.model_id, newValue: modelId },
+            { field: 'category_id', oldValue: asset.category_id, newValue: categoryId },
+        ].filter((change) => String(change.oldValue) !== String(change.newValue));
+
+        for (const change of changes) {
             recordHistory({
                 assetId: asset.id,
-                action: 'update',
-                oldValue: asset.status,
-                newValue: status,
+                action: `update:${change.field}`,
+                oldValue: String(change.oldValue ?? ''),
+                newValue: String(change.newValue ?? ''),
                 username: req.session.user.username,
             });
         }

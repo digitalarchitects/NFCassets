@@ -48,6 +48,10 @@ router.post('/logout', (req, res) => {
     });
 });
 
+router.get('/csrf-token', (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
+});
+
 router.get('/me', (req, res) => {
     if (req.session && req.session.user) {
         const user = db
