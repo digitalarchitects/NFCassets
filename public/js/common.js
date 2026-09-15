@@ -54,10 +54,10 @@
         if (!el) return;
         const isAdmin = user && user.role === 'admin';
         const adminLinks = isAdmin
-            ? '<a class="nav-link ${activePage === \'users\' ? \'active\' : \'\'}" href="/users.html">Users</a>' +
-              '<a class="nav-link ${activePage === \'lists\' ? \'active\' : \'\'}" href="/admin/lists.html">Lists</a>' +
-              '<a class="nav-link ${activePage === \'ldap\' ? \'active\' : \'\'}" href="/admin/ldap.html">LDAP</a>' +
-              '<a class="nav-link ${activePage === \'sync-review\' ? \'active\' : \'\'}" href="/admin/sync-review.html">Sync</a>'
+            ? `<a class="nav-link ${activePage === 'users' ? 'active' : ''}" href="/users.html">Users</a>` +
+              `<a class="nav-link ${activePage === 'lists' ? 'active' : ''}" href="/admin/lists.html">Lists</a>` +
+              `<a class="nav-link ${activePage === 'ldap' ? 'active' : ''}" href="/admin/ldap.html">LDAP</a>` +
+              `<a class="nav-link ${activePage === 'sync-review' ? 'active' : ''}" href="/admin/sync-review.html">Sync</a>`
             : '';
         el.innerHTML = `
         <nav class="navbar navbar-expand navbar-dark bg-dark mb-3">
