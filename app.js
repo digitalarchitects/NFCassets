@@ -1,10 +1,10 @@
-require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');
 const csrfProtection = require('./middleware/csrf');
 const SqliteSessionStore = require('./db/sessionStore');
+const config = require('./config');
 
 require('./db/db'); // bootstraps schema on boot
 
@@ -18,8 +18,8 @@ const adminRoutes = require('./routes/admin');
 const { requireAuth } = require('./middleware/auth');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const isProd = process.env.NODE_ENV === 'production';
+const PORT = config.PORT;
+const isProd = config.NODE_ENV === 'production';
 
 // Export the app for testing; only start the server when this file is run directly.
 function startServer() {
@@ -73,7 +73,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
     session({
         store: new SqliteSessionStore(),
-        secret: process.env.SESSION_SECRET,
+        secret: config.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {
