@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');
 const csrfProtection = require('./middleware/csrf');
+const SqliteSessionStore = require('./db/sessionStore');
 
 require('./db/db'); // bootstraps schema on boot
 
@@ -20,7 +21,42 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === 'production';
 
+// Export the app for testing; only start the server when this file is run directly.
+function startServer() {
+    app.listen(PORT, () => {
+        console.log(`NFC Asset Tracker listening on http://localhost:${PORT}`);
+
+        // Spec 004: Schedule daily LDAP sync if configured
+        if (process.env.LDAP_URL && process.env.LDAP_BIND_PASSWORD) {
+            const { importFromLDAP } = require('./lib/ldap');
+            const syncHour = parseInt(process.env.LDAP_SYNC_HOUR || '3', 10);
+            const msPerDay = 24 * 60 * 60 * 1000;
+
+            function scheduleNext() {
+                const now = new Date();
+                const next = new Date(now);
+                next.setHours(syncHour, 0, 0, 0);
+                if (next <= now) next.setDate(next.getDate() + 1);
+                const delay = next - now;
+                console.log(`LDAP sync scheduled for ${next.toISOString()} (in ${Math.round(delay / 60000)} min)`);
+                setTimeout(() => {
+                    console.log('Running scheduled LDAP sync...');
+                    importFromLDAP().then(r => console.log('LDAP sync done:', r)).catch(e => console.error('LDAP sync error:', e));
+                    scheduleNext();
+                }, delay);
+            }
+            scheduleNext();
+        }
+    });
+}
+
 app.set('trust proxy', 1);
+
+if (require.main === module) {
+    startServer();
+}
+
+module.exports = app;
 
 const CDN = 'https://cdn.jsdelivr.net';
 
@@ -36,9 +72,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(
     session({
+        store: new SqliteSessionStore(),
         secret: process.env.SESSION_SECRET,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         cookie: {
             httpOnly: true,
             sameSite: 'lax',
@@ -75,30 +112,4 @@ app.use((err, req, res, next) => {
     }
     console.error(err);
     res.status(err.status || 500).json({ error: isProd ? 'Server error' : err.message });
-});
-
-app.listen(PORT, () => {
-    console.log(`NFC Asset Tracker listening on http://localhost:${PORT}`);
-
-    // Spec 004: Schedule daily LDAP sync if configured
-    if (process.env.LDAP_URL && process.env.LDAP_BIND_PASSWORD) {
-        const { importFromLDAP } = require('./lib/ldap');
-        const syncHour = parseInt(process.env.LDAP_SYNC_HOUR || '3', 10);
-        const msPerDay = 24 * 60 * 60 * 1000;
-
-        function scheduleNext() {
-            const now = new Date();
-            const next = new Date(now);
-            next.setHours(syncHour, 0, 0, 0);
-            if (next <= now) next.setDate(next.getDate() + 1);
-            const delay = next - now;
-            console.log(`LDAP sync scheduled for ${next.toISOString()} (in ${Math.round(delay / 60000)} min)`);
-            setTimeout(() => {
-                console.log('Running scheduled LDAP sync...');
-                importFromLDAP().then(r => console.log('LDAP sync done:', r)).catch(e => console.error('LDAP sync error:', e));
-                scheduleNext();
-            }, delay);
-        }
-        scheduleNext();
-    }
 });
