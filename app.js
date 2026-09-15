@@ -91,6 +91,7 @@ app.use('/api/auth', authRoutes);
 // CSRF protection for all other state-changing requests
 app.use('/api', csrfProtection);
 
+// Endpoint to fetch the CSRF token for the current session (used by the SPA and tests)
 app.get('/api/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
 });
