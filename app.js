@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');
 const csrfProtection = require('./middleware/csrf');
+const SqliteSessionStore = require('./db/sessionStore');
 
 require('./db/db'); // bootstraps schema on boot
 
@@ -36,9 +37,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(
     session({
+        store: new SqliteSessionStore(),
         secret: process.env.SESSION_SECRET,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         cookie: {
             httpOnly: true,
             sameSite: 'lax',
