@@ -189,10 +189,10 @@
         list.innerHTML = data.history
             .map(
                 (h) => `<div class="history-item">
-                <div><strong>${h.action}</strong> ${h.username ? `by ${h.username}` : ''}</div>
+                <div><strong>${AT.escapeHtml(h.action)}</strong> ${h.username ? `by ${AT.escapeHtml(h.username)}` : ''}</div>
                 <div class="text-muted small">${new Date(h.created).toLocaleString()}</div>
-                ${h.old_value ? `<div class="small">From: ${h.old_value}</div>` : ''}
-                ${h.new_value ? `<div class="small">To: ${h.new_value}</div>` : ''}
+                ${h.old_value ? `<div class="small">From: ${AT.escapeHtml(h.old_value)}</div>` : ''}
+                ${h.new_value ? `<div class="small">To: ${AT.escapeHtml(h.new_value)}</div>` : ''}
             </div>`
             )
             .join('') || '<p class="text-muted">No history yet.</p>';
@@ -204,7 +204,7 @@
         if (res && res.ok) {
             const data = await res.json();
             const sel = document.getElementById('new-location-id');
-            sel.innerHTML = '<option value="">(no change)</option>' + data.locations.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+            sel.innerHTML = '<option value="">(no change)</option>' + data.locations.map(l => `<option value="${l.id}">${AT.escapeHtml(l.name)}</option>`).join('');
         }
     } catch (e) { /* dropdown will be empty — still works */ }
 

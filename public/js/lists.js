@@ -32,10 +32,10 @@
         const rows = document.getElementById('loc-rows');
         rows.innerHTML = data.locations.map(l => `
             <tr class="${l.active ? '' : 'table-secondary text-muted'}">
-                <td>${l.name}</td>
+                <td>${AT.escapeHtml(l.name)}</td>
                 <td><span class="badge ${l.active ? 'bg-success' : 'bg-secondary'}">${l.active ? 'Active' : 'Inactive'}</span></td>
                 <td>
-                    <button class="btn btn-outline-secondary btn-sm loc-rename" data-id="${l.id}" data-name="${l.name}">Rename</button>
+                    <button class="btn btn-outline-secondary btn-sm loc-rename" data-id="${l.id}" data-name="${AT.escapeHtml(l.name)}">Rename</button>
                     ${l.active
                         ? `<button class="btn btn-outline-danger btn-sm loc-deactivate" data-id="${l.id}">Deactivate</button>`
                         : `<button class="btn btn-outline-success btn-sm loc-activate" data-id="${l.id}">Activate</button>`
@@ -99,9 +99,9 @@
         const rows = document.getElementById('make-rows');
         rows.innerHTML = data.makes.map(m => `
             <tr class="make-row ${m.active ? '' : 'table-secondary text-muted'}" data-id="${m.id}">
-                <td>${m.name} <span class="badge bg-info ms-1">${m.models.length} models</span></td>
+                <td>${AT.escapeHtml(m.name)} <span class="badge bg-info ms-1">${m.models.length} models</span></td>
                 <td>
-                    <button class="btn btn-outline-secondary btn-sm make-rename" data-id="${m.id}" data-name="${m.name}">Rename</button>
+                    <button class="btn btn-outline-secondary btn-sm make-rename" data-id="${m.id}" data-name="${AT.escapeHtml(m.name)}">Rename</button>
                     ${m.active
                         ? `<button class="btn btn-outline-danger btn-sm make-deactivate" data-id="${m.id}">Deactivate</button>`
                         : `<button class="btn btn-outline-success btn-sm make-activate" data-id="${m.id}">Activate</button>`
@@ -163,10 +163,10 @@
         const rows = document.getElementById('model-rows');
         rows.innerHTML = data.models.map(m => `
             <tr class="${m.active ? '' : 'table-secondary text-muted'}">
-                <td>${m.name}</td>
+                <td>${AT.escapeHtml(m.name)}</td>
                 <td><span class="badge ${m.active ? 'bg-success' : 'bg-secondary'}">${m.active ? 'Active' : 'Inactive'}</span></td>
                 <td>
-                    <button class="btn btn-outline-secondary btn-sm model-rename" data-id="${m.id}" data-name="${m.name}">Rename</button>
+                    <button class="btn btn-outline-secondary btn-sm model-rename" data-id="${m.id}" data-name="${AT.escapeHtml(m.name)}">Rename</button>
                     ${m.active
                         ? `<button class="btn btn-outline-danger btn-sm model-deactivate" data-id="${m.id}">Deactivate</button>`
                         : `<button class="btn btn-outline-success btn-sm model-activate" data-id="${m.id}">Activate</button>`
@@ -240,10 +240,10 @@
         const rows = document.getElementById('cat-rows');
         rows.innerHTML = data.categories.map(c => `
             <tr class="${c.active ? '' : 'table-secondary text-muted'}">
-                <td>${c.name}</td>
+                <td>${AT.escapeHtml(c.name)}</td>
                 <td><span class="badge ${c.active ? 'bg-success' : 'bg-secondary'}">${c.active ? 'Active' : 'Inactive'}</span></td>
                 <td>
-                    <button class="btn btn-outline-secondary btn-sm cat-rename" data-id="${c.id}" data-name="${c.name}">Rename</button>
+                    <button class="btn btn-outline-secondary btn-sm cat-rename" data-id="${c.id}" data-name="${AT.escapeHtml(c.name)}">Rename</button>
                     ${c.active
                         ? `<button class="btn btn-outline-danger btn-sm cat-deactivate" data-id="${c.id}">Deactivate</button>`
                         : `<button class="btn btn-outline-success btn-sm cat-activate" data-id="${c.id}">Activate</button>`

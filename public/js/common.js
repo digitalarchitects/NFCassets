@@ -2,6 +2,15 @@
 (function (window) {
     let csrfToken = null;
 
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     async function getCsrfToken() {
         if (csrfToken) return csrfToken;
         const res = await fetch('/api/csrf-token', { credentials: 'same-origin' });
@@ -70,7 +79,7 @@
               ${adminLinks}
             </div>
             <div class="d-flex align-items-center">
-              <a class="text-light me-3 text-decoration-none" href="/profile.html">${user ? user.username : ''}${isAdmin ? ' (admin)' : ''}</a>
+              <a class="text-light me-3 text-decoration-none" href="/profile.html">${user ? escapeHtml(user.username) : ''}${isAdmin ? ' (admin)' : ''}</a>
               <button class="btn btn-outline-light btn-sm" id="logout-btn">Logout</button>
             </div>
           </div>
@@ -82,7 +91,7 @@
         });
     }
 
-    window.AT = { apiFetch, requireLogin, renderNav, getCsrfToken };
+    window.AT = { apiFetch, requireLogin, renderNav, getCsrfToken, escapeHtml };
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
