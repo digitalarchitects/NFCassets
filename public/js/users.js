@@ -51,16 +51,16 @@
                     <select class="form-select form-select-sm d-inline-block w-auto role-select" data-id="${u.id}" ${!isActive ? 'disabled' : ''}>
                         ${roleOptions}
                     </select>
-                    <button class="btn btn-outline-secondary btn-sm reset-pw-btn" data-id="${u.id}" data-username="${u.username}">Reset PW</button>
+                    <button class="btn btn-outline-secondary btn-sm reset-pw-btn" data-id="${u.id}" data-username="${AT.escapeHtml(u.username)}">Reset PW</button>
                     ${isActive
-                        ? `<button class="btn btn-outline-danger btn-sm deactivate-btn" data-id="${u.id}" data-username="${u.username}">Deactivate</button>`
-                        : `<button class="btn btn-outline-success btn-sm activate-btn" data-id="${u.id}" data-username="${u.username}">Activate</button>`
+                        ? `<button class="btn btn-outline-danger btn-sm deactivate-btn" data-id="${u.id}" data-username="${AT.escapeHtml(u.username)}">Deactivate</button>`
+                        : `<button class="btn btn-outline-success btn-sm activate-btn" data-id="${u.id}" data-username="${AT.escapeHtml(u.username)}">Activate</button>`
                     }
                 `;
 
             return `<tr class="${rowClass}">
-                <td>${u.username}</td>
-                <td>${u.role}</td>
+                <td>${AT.escapeHtml(u.username)}</td>
+                <td>${AT.escapeHtml(u.role)}</td>
                 <td>${statusBadge}</td>
                 <td>${new Date(u.created).toLocaleDateString()}</td>
                 <td>${selfActions}</td>

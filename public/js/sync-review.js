@@ -30,7 +30,7 @@
         const card = document.createElement('div');
         card.className = 'card mb-3';
         card.innerHTML = `
-            <div class="card-header"><strong>${typeLabels[type] || type}</strong> (${issues.length})</div>
+            <div class="card-header"><strong>${AT.escapeHtml(typeLabels[type] || type)}</strong> (${issues.length})</div>
             <div class="card-body">
                 <table class="table table-sm">
                     <thead><tr><th>Username</th><th>Details</th><th>Action</th></tr></thead>
@@ -39,9 +39,9 @@
                             let details = '';
                             try { const d = JSON.parse(i.details || '{}'); details = Object.entries(d).map(([k,v]) => `${k}: ${v}`).join(', '); } catch(e) {}
                             return `<tr>
-                                <td>${i.username}</td>
-                                <td class="small">${details}</td>
-                                <td class="issue-actions" data-id="${i.id}" data-username="${i.username}" data-type="${type}">
+                                <td>${AT.escapeHtml(i.username)}</td>
+                                <td class="small">${AT.escapeHtml(details)}</td>
+                                <td class="issue-actions" data-id="${i.id}" data-username="${AT.escapeHtml(i.username)}" data-type="${AT.escapeHtml(type)}">
                                     ${type === 'missing_from_ad' ? '<button class="btn btn-outline-danger btn-sm deactivate-btn">Deactivate</button> <button class="btn btn-outline-secondary btn-sm ignore-btn">Ignore</button>' : ''}
                                     ${type === 'ad_disabled' ? '<button class="btn btn-outline-danger btn-sm deactivate-btn">Deactivate</button> <button class="btn btn-outline-success btn-sm reenable-btn">Re-enable</button> <button class="btn btn-outline-secondary btn-sm ignore-btn">Ignore</button>' : ''}
                                     ${type === 'conflict' ? '<button class="btn btn-outline-secondary btn-sm ignore-btn">Ignore</button>' : ''}

@@ -30,7 +30,7 @@
         populateDropdown('new-category', data.categories);
 
         const makeSel = document.getElementById('new-make');
-        makeSel.innerHTML = '<option value="">Make</option>' + data.makes.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+        makeSel.innerHTML = '<option value="">Make</option>' + data.makes.map(m => `<option value="${m.id}">${AT.escapeHtml(m.name)}</option>`).join('');
         document.getElementById('new-model').innerHTML = '<option value="">Model (select make first)</option>';
 
         // Wire make → model filter
@@ -45,14 +45,14 @@
             if (filtered.length === 0) {
                 modelSel.innerHTML = '<option value="">No models available</option>';
             } else {
-                modelSel.innerHTML = '<option value="">Select model</option>' + filtered.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+                modelSel.innerHTML = '<option value="">Select model</option>' + filtered.map(m => `<option value="${m.id}">${AT.escapeHtml(m.name)}</option>`).join('');
             }
         });
     }
 
     function populateDropdown(id, items) {
         const sel = document.getElementById(id);
-        sel.innerHTML = `<option value="">${sel.options[0]?.text || 'All'}</option>` + items.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+        sel.innerHTML = `<option value="">${sel.options[0]?.text || 'All'}</option>` + items.map(i => `<option value="${i.id}">${AT.escapeHtml(i.name)}</option>`).join('');
     }
 
     const statusColors = { active: 'bg-success', missing: 'bg-danger', retired: 'bg-secondary' };
@@ -79,13 +79,13 @@
         rows.innerHTML = data.assets
             .map(
                 (a) => `<tr style="cursor:pointer" onclick="window.location.href='/asset.html?id=${a.id}'">
-                <td>${a.asset_no}</td>
-                <td>${a.description || ''}</td>
-                <td>${[a.makeName, a.modelName].filter(Boolean).join(' ') || '-'}</td>
-                <td>${a.owner || ''}</td>
-                <td>${a.locationName || a.location || ''}</td>
-                <td>${a.categoryName || '-'}</td>
-                <td><span class="badge ${statusColors[a.status] || 'bg-secondary'}">${a.status}</span></td>
+                <td>${AT.escapeHtml(a.asset_no)}</td>
+                <td>${AT.escapeHtml(a.description || '')}</td>
+                <td>${AT.escapeHtml([a.makeName, a.modelName].filter(Boolean).join(' ') || '-')}</td>
+                <td>${AT.escapeHtml(a.owner || '')}</td>
+                <td>${AT.escapeHtml(a.locationName || a.location || '')}</td>
+                <td>${AT.escapeHtml(a.categoryName || '-')}</td>
+                <td><span class="badge ${statusColors[a.status] || 'bg-secondary'}">${AT.escapeHtml(a.status)}</span></td>
             </tr>`
             )
             .join('') || '<tr><td colspan="7" class="text-muted">No assets found.</td></tr>';
