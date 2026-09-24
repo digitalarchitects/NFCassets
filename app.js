@@ -103,7 +103,13 @@ app.use('/api/users', requireAuth, userRoutes);
 app.use('/api/lists', requireAuth, listRoutes);
 app.use('/api/admin', requireAuth, adminRoutes);
 
-app.use('/uploads', requireAuth, express.static(path.join(__dirname, 'uploads')));
+function uploadsDir() {
+    return process.env.DATA_DIR
+        ? path.join(process.env.DATA_DIR, 'uploads')
+        : path.join(__dirname, 'uploads');
+}
+
+app.use('/uploads', requireAuth, express.static(uploadsDir()));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // JSON error handler (keep stack traces out of responses).
