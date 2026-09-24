@@ -6,7 +6,26 @@ const csrfProtection = require('./middleware/csrf');
 const SqliteSessionStore = require('./db/sessionStore');
 const config = require('./config');
 
-require('./db/db'); // bootstraps schema on boot
+const db = require('./db/db'); // bootstraps schema on boot
+
+// Auto-create initial admin user if no users exist (fresh deploy)
+(function bootstrapAdmin() {
+    const count = db.prepare('SELECT COUNT(*) AS n FROM users').get().n;
+    if (count === 0) {
+        const bcrypt = require('bcryptjs');
+        const username = process.env.ADMIN_USERNAME || 'admin';
+        const password = process.env.ADMIN_PASSWORD;
+        if (password) {
+            const hash = bcrypt.hashSync(password, 12);
+            db.prepare(
+                'INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)'
+            ).run(username, hash, 'admin');
+            console.log(`Admin user "${username}" auto-created.`);
+        } else {
+            console.warn('ADMIN_PASSWORD not set — no admin user created on startup.');
+        }
+    }
+})();
 
 const authRoutes = require('./routes/auth');
 const assetRoutes = require('./routes/assets');
