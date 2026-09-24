@@ -8,6 +8,7 @@ RUN npm ci --only=production && npm cache clean --force
 
 # Copy app source
 COPY app.js ./
+COPY config.js ./
 COPY db/ ./db/
 COPY middleware/ ./middleware/
 COPY routes/ ./routes/
