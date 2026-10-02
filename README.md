@@ -5,9 +5,9 @@ fallback), built as a proof of concept that runs anywhere Node.js runs
 (Raspberry Pi, small VM, or a laptop).
 
 ## Stack
-- **Front end:** PWA (manifest + service worker), Bootstrap, vanilla JS, Web NFC API
+- **Front end:** PWA (manifest + service worker), Bootstrap (vendored), vanilla JS, Web NFC API
 - **Back end:** Node.js + Express
-- **Database:** SQLite (via `better-sqlite3`)
+- **Database:** SQLite (via Node built-in `node:sqlite`, experimental in Node 22)
 - **Auth:** local username/password accounts stored in SQLite (session-based)
 
 ## Setup
@@ -15,11 +15,13 @@ fallback), built as a proof of concept that runs anywhere Node.js runs
 ```bash
 npm install
 cp .env.example .env   # then edit SESSION_SECRET / ADMIN_USERNAME / ADMIN_PASSWORD
-npm run seed            # creates the initial admin user
 npm start                # or `npm run dev` for auto-reload
 ```
 
 The app listens on `http://localhost:3000` by default.
+
+On first boot, if the `users` table is empty and `ADMIN_PASSWORD` is set, an
+admin account is created automatically (mirrors the logic in `npm run seed`).
 
 ## Web NFC requires HTTPS
 
@@ -38,6 +40,7 @@ manual asset-number entry — no code changes required.
   NFC tag / QR code) and a human-readable `asset_no`
 - `asset_history` — audit trail of create/update/transfer/verify/photo events
 - `verification` — GPS-stamped "asset present" checks, used for audits
+- `sync_log` / `sync_issues` — LDAP sync audit trail
 
 ## Bulk import
 
@@ -48,6 +51,22 @@ from the Assets page.
 
 Verification scans made while offline are queued in IndexedDB on the device
 and automatically synced the next time the browser regains connectivity.
+
+## Configuration
+
+| Variable | Default | Notes |
+|---|---|---|
+| `PORT` | `3000` | HTTP listen port |
+| `SESSION_SECRET` | **required** | Minimum 32 characters |
+| `NODE_ENV` | `development` | `production` enables secure cookies |
+| `ADMIN_USERNAME` | `admin` | Only used on first boot (empty users table) |
+| `ADMIN_PASSWORD` | — | If unset, no admin is auto-created on first boot |
+| `DATA_DIR` | *app-relative* | Override SQLite DB + uploads directory for k8s with PVC at `/data` |
+| `LDAP_URL` | — | Enables LDAP sync when set with `LDAP_BIND_PASSWORD` |
+| `LDAP_BIND_DN` | — | LDAP bind distinguished name |
+| `LDAP_BIND_PASSWORD` | — | LDAP bind credential |
+| `LDAP_BASE_DN` | — | LDAP search base |
+| `LDAP_SYNC_HOUR` | `3` | Hour of day to run the scheduled LDAP sync |
 
 ## Roadmap ideas
 
